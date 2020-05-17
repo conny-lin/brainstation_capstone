@@ -11,15 +11,5 @@ p = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/
 T = readtable(p,'Delimiter','comma');
 % get paths into cell array
 pMWTS = T.mwtpath;
-%%
-[p,fn] = fileparts(pMWTS{1});
-
-%% run chore for drunkposture2 on 1 file to test
-for i = 1:numel(pMWTS)
-    fprintf('processing: %s',pMWTS{i})
-    [~,pMWTpass,pMWTfailed] = chormaster5('DrunkPosture',pMWTS(i));
-end
-
-
-%% run on all
+% run on all
 [Legend,pMWTpass,pMWTfailed] = chormaster5('DrunkPosture',pMWTS);

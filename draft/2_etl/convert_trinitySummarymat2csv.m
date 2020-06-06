@@ -76,10 +76,11 @@ for i = i_start:size(MWTDB_process,1)
     load(ptrinity)
     % if psavemeta doesn't exist, convert meta
     % make empty row number container
-    rownumber = nan(size(masterData(:,2)));
-    column_number = nan(size(masterData(:,2)));
+    rows_masterdata = size(masterData,1);
+    rownumber = nan(rows_masterdata,1);
+    column_number = nan(rows_masterdata,1);
     % get row number and data column number
-    for irows = 1:size(masterData,1)
+    for irows = 1:rows_masterdata
         [rownumber(irows),column_number(irows)] = size(masterData{irows,2});
     end
     % check if column number matches, 
@@ -89,17 +90,18 @@ for i = i_start:size(MWTDB_process,1)
 
         % process meta first
         fprintf('-trinity_meta.csv-')
-
         % convert worm number to numeric values
         dmaster_wormid = masterData(:,1);
         wormnumber = regexpcellout(dmaster_wormid,'(?<=0*)[1-9]{1,}[0-9]{0,}','match');
-        wormnumber = str2double(worm_id_out);
+        wormnumber = str2double(wormnumber);
+        
         % make row numbers in 
         index_array = cell(size(rownumber));
         for wormi = 1:numel(rownumber)
             index_array{wormi} = repmat(wormnumber(wormi), rownumber(wormi), 1);
         end
         index_array = cell2mat(index_array);
+        
         % combine
         fprintf('-trinity_idin.csv-')
         a = [index_array, cell2mat(masterData(:,2))];

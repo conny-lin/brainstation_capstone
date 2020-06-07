@@ -180,11 +180,19 @@ def updateMWTDB(path_dbcsv, path_db, search_param='structured', addfullpath=Fals
         MWTDB_append = []
     return MWTDB_append
 
-
-# end - MWT functions -----------------------------------------------------------
-
+def make_chor_output_legend(chorlegendpath, chorjavacall):
+    legend_chor = pd.read_csv(chorlegendpath)
+    # create drunk moves .dat legend
+    javacallletters = []
+    for letters in chorjavacall:
+        javacallletters.append(letters)
+    column_names = pd.DataFrame(javacallletters,columns=['call'])
+    column_names = column_names.merge(legend_chor,how='left', on='call')
+    return column_names
 
 # MWTDB class ------------------------------------------------------------------
 class MWTDB:
     def __init__(self, path_input):
         self.path_input = path_input
+
+# end - MWT functions -----------------------------------------------------------

@@ -1,16 +1,12 @@
 # Functions and Classes for BrainStation Projects
 # Conny Lin | June 5, 2020
-
-import os
-import sys
-import time
-import re
-import glob
+# ------------------------------------------------------------------------------------
+import os, sys, time, re, glob, pickle
 import pandas as pd
 import numpy as np
 
 # Database handling ==================================================================
-# MWT functions ---------------------------------------------------------------
+# MWT functions ----------------------------------------------------------------------
 def searchMWTplates(path_input, search_param='structured'):
 
     """
@@ -193,6 +189,89 @@ class TrinityData:
         self.data.insert(addposition, 'ethanol', d)
         return self.data
 # end -- Trinity --------------------------------------------------------------------
+
+# Nutcracker ------------------------------------------------------------------------
+def nutcracker_process_rawdata(pdata, mwtid):
+    column_names_raw = np.array(['time','id','frame','persistence','area','midline',\
+            'morphwidth','width','relwidth','length','rellength','aspect',\
+            'relaspect','kink','curve','speed','angular','bias','persistence',\
+            'dir', 'loc_x','loc_y','vel_x','vel_y','orient','crab','tap','puff',\
+            'stim3','stim4'])
+    column_index_keep = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,22,23,24,25]
+    column_names = column_names_raw[column_index_keep]
+    # load data put in data frame
+    df = pd.read_csv(pdata, delimiter=' ', header=None, usecols=column_index_keep, 
+                     names=column_names, dtype=np.float64, engine='c')
+    # remove data before 100s
+    df.drop(axis=0, index=df.index[df['time']>100], inplace=True)
+    # remove nan
+    df.dropna(axis=0, inplace=True)
+    # add mwtid column
+    df.insert(0,'mwtid', np.tile(mwtid, df.shape[0]))
+    # add etoh column
+    if ('/N2_400mM/' in pdata):
+        df.insert(0,'etoh', np.tile(1, df.shape[0]))
+    else:
+        df.insert(0,'etoh', np.tile(0, df.shape[0]))
+    return df
+
+def nutcracker_process_perplate(mwtpaths_db, sourcedbdir, savedbdir):
+    # look for nutcracker files in this plate
+    nutcracker_filelist = []
+    for imwt, pmwt in enumerate(mwtpaths_db):
+        pnutcracker = glob.glob(pmwt+'/*.nutcracker.*.dat')
+        if len(pnutcracker) > 0:
+            print(pmwt)
+            # make storage for df
+            df_store = []
+            for ifile, pdata in enumerate(pnutcracker):
+                print(f'\tprocessing {ifile}', end='\r')
+                # get time data
+                df = pd.read_csv(pdata, delimiter=' ', header=None, usecols=[0], 
+                                 names=['time'], dtype=np.float64, engine='c')
+                # see if data has time before 100s
+                if sum(df['time']<100) > 0:
+                    df = nutcracker_process_rawdata(pdata, imwt)
+                    # add df to storage
+                    df_store.append(df)
+            # combine multiple nutcracker files (just before tap and only non NAN)
+            df_mwt = pd.concat(df_store, ignore_index=True)
+            print(f'\n\t{df_mwt.shape[0]} rows')
+            # add etoh column
+
+            # save csv in dropbox
+            pmwt_dropbox = str.replace(pmwt, sourcedbdir, savedbdir)
+            pdata_save_dropbox = os.path.join(pmwt_dropbox, 'nutcracker_100s.csv')
+            nutcracker_filelist.append(pdata_save_dropbox)
+            df_mwt.to_csv(pdata_save_dropbox, index=False)
+            print(f'\tsaved nutcracker_100s.csv')
+    return df_mwt, nutcracker_filelist
+
+def nutcracker_combineall(nutcracker_filepaths):
+    # load and combine nutcracker_filelist
+    df_store = []
+    for filepath in nutcracker_filepaths:
+        df_store.append(pd.read_csv(filepath, dtype=np.float64, engine='c'))
+    data = pd.concat(df_store, ignore_index=True)
+    return data
+
+def nutcracker_split_Xy(data, dir_save):
+    # split X/y
+    # y column
+    y_column = ['etoh']
+    y = data[y_column].copy()
+    data.drop(columns=y_column, inplace=True)
+    y.to_csv(os.path.join(dir_save, 'nutcracker_y.csv'), index=False)
+    # identifier column
+    identifier_column = ['id','mwtid']
+    data_identifiers = data[identifier_column].copy()
+    data.drop(columns=identifier_column, inplace=True)
+    data_identifiers.to_csv(os.path.join(dir_save, 'nutcracker_identifier.csv'), index=False)
+    # save X
+    data.to_csv(os.path.join(dir_save, 'nutcracker_X.csv'), index=False)
+    print('saving done')
+# end -- Nutcracker -----------------------------------------------------------------
+
 # end -- Data processing ============================================================
 
 

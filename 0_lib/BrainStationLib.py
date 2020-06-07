@@ -9,7 +9,9 @@ import glob
 import pandas as pd
 import numpy as np
 
-# Data processing
+# Data processing ==================================================================
+
+# Trinity -------------------------------------------------------------------------
 class TrinityData:
     """
     Process trinity data from a path of the data
@@ -85,6 +87,9 @@ class TrinityData:
         return self.data
 
 
+# end -- Trinity --------------------------------------------------------------------
+
+
 
 # MWT functions ---------------------------------------------------------------
 def searchMWTplates(path_input, search_param='structured'):
@@ -150,22 +155,14 @@ def compare_pMWT_list(pMWT_found, pMWT_db):
     pMWT_new = np.setdiff1d(pMWT_found, pMWT_db)
     return pMWT_new
 
-def makeMWTDB(pMWT, addfullpath=True):
+def makeMWTDB(pMWT):
     # parse by
     pMWT_parsed = parse_pMWT_paths(pMWT)
-    # define column names
-    columns7 = ['h','v','drive','db','expname','groupname','platename']
-    columns4 = ['db','expname','groupname','platename']
     # transform to dataframe and add column names
-    if pMWT_parsed.shape[1]==7:
-        MWTDB_pMWT = pd.DataFrame(pMWT_parsed, columns=columns7)
-        MWTDB_pMWT.drop(columns=['h','v','drive'], inplace=True)
-    elif pMWT_parsed.shape[1]==4:
-        MWTDB_pMWT = pd.DataFrame(pMWT_parsed, columns=columns4)
-    MWTDB_pMWT.index.name = 'mwtid'
-    # add full path
-    if addfullpath:
-        MWTDB_pMWT.insert(0,'mwtpath', pMWT)
+    MWTDB_pMWT = pd.DataFrame({'mwtpath': pMWT})
+    MWTDB_pMWT['expname'] = pMWT_parsed[:,-3]
+    MWTDB_pMWT['groupname'] = pMWT_parsed[:,-2]
+    MWTDB_pMWT['platename'] = pMWT_parsed[:,-1]
     return MWTDB_pMWT
 
 def updateMWTDB(path_dbcsv, path_db, search_param='structured', addfullpath=False):
@@ -174,7 +171,7 @@ def updateMWTDB(path_dbcsv, path_db, search_param='structured', addfullpath=Fals
     pMWT_db = MWTDB_makepath2plates(MWTDB, path_db)
     pMWT_new = compare_pMWT_list(pMWT_found, pMWT_db)
     if len(pMWT_new)>0:
-        MWTDB_new = makeMWTDB(pMWT_new, addfullpath)
+        MWTDB_new = makeMWTDB(pMWT_new)
         MWTDB_append = MWTDB.append(MWTDB_new, ignore_index=True)
         MWTDB_append.to_csv(path_dbcsv)
         print('new MWTDB updated')

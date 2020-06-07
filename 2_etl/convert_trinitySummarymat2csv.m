@@ -25,10 +25,10 @@ for i = 1:size(MWTDB.text,1)
     end
     % get path for mwt plate
     pmwt = MWTDB.text.mwtpath{i};
-    % make output folder
-    psavefolder = fileparts(strrep(ptrinity,'/Volumes/COBOLT','/Users/connylin/Dropbox/MWT/db'));
     % make expected trinitysummary path
     ptrinity = fullfile(pmwt, 'trinitySummary.mat');
+    % make output folder
+    psavefolder = fileparts(strrep(ptrinity,'/Volumes/COBOLT','/Users/connylin/Dropbox/MWT/db'));
     % get path for mwt plate
     pmwt = MWTDB.text.mwtpath{i};
     if exist(fullfile(pmwt, 'trinitySummary.mat')) ~= 0
@@ -47,6 +47,7 @@ sum(MWTDB_check.trinitySummary)
 %% reduce the database to only ones with trinity Symmary
 i = MWTDB_check.trinitySummary==1;
 MWTDB_process = MWTDB_check(i,:);
+
 
 %% export to csv
 % ERROR NOTE: 
@@ -146,8 +147,7 @@ for i = i_start:size(MWTDB_process,1)
 %     fprintf('\n')
 end
 
-%% save MWTDB_process in csv
-writetable(MWTDB_process, fullpath(psavefolder, 'MWTDB_process_trinity.csv'))
+
 
 
 

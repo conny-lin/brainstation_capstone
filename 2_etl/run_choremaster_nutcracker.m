@@ -4,8 +4,15 @@
 % Conny Lin | May 19, 2020
 % -------------------------------------------------------------------------
 % add path to chormaster function and general matlab local functions
-addpath(genpath('/Users/connylin/Dropbox/Code/language/matlab_general'))
-addpath(genpath('/Users/connylin/Dropbox/Code/proj/rankin_lab'))
+computername = 'Angular Gyrus';
+switch computername
+    case 'PFC'
+        homepath = '/Users/connylin/Dropbox/Code';
+    case 'Angular Gyrus'
+        homepath = '/Users/connylin/Code';
+end
+addpath(genpath(fullfile(homepath, 'language/matlab_general')))
+addpath(genpath(fullfile(homepath, 'proj/rankin_lab')))
 
 %% load csv
 % load csv to get mwt paths

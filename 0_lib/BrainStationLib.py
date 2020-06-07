@@ -180,6 +180,7 @@ def updateMWTDB(path_dbcsv, path_db, search_param='structured', addfullpath=Fals
         print('new MWTDB updated')
     else:
         print('nothing new to update')
+        MWTDB_append = []
     return MWTDB_append
 
 

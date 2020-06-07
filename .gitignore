@@ -1,6 +1,8 @@
 # temporary files
+testcode.py
 .DS_Store
 .ipynb_checkpoints*
+*.cpython-*
 
 # Prerequisites
 *.d

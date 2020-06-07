@@ -12,8 +12,6 @@ addpath(genpath('/Users/connylin/Dropbox/Code/proj/rankin_lab'))
 p = '/Volumes/COBOLT/MWT/MWTDB.csv';
 T = readtable(p,'Delimiter','comma');
 
-
-
 %% get only ISI=10, preplate=100, N2, N2_400mM
 T(~(strcmp(T.groupname, 'N2') | strcmp(T.groupname, 'N2_400mM')),:) = [];
 T(~strcmp(T.rc, '100s30x10s10s'),:) = [];
@@ -21,7 +19,6 @@ T(~strcmp(T.rc, '100s30x10s10s'),:) = [];
 psave = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data/MWTDB_N240010sISI.csv';
 writetable(T, psave);
 pMWTS = T.mwtpath;
-
 
 %% run on all
 [Legend,pMWTpass,pMWTfailed] = chormaster5('Nutcracker',pMWTS);

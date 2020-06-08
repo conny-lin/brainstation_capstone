@@ -56,7 +56,7 @@ mwtpaths = getMWTdb(savedir, mwtpath_csv_name)
 
 # combine individual nutcracker per plate
 print('\ncombining individual nutcracker data per plate. this will take a while')
-_, nutcracker_filepaths = bs.nutcracker_process_perplate(mwtpaths, sourcedir_db, savedir_db)
+nutcracker_filepaths = bs.nutcracker_process_perplate(mwtpaths, sourcedir_db, savedir_db)
 
 print('\ncombining all combined nutcracker data from each plate (memory intensive!)')
 data = bs.nutcracker_combineall(nutcracker_filepaths)

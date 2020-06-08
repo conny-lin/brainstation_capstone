@@ -262,15 +262,22 @@ def nutcracker_process_perplate(mwtpaths_db, sourcedbdir, savedbdir, overwrite=F
                     df = nutcracker_process_rawdata(pdata, imwt)
                     # add df to storage
                     df_store.append(df)
-            # combine multiple nutcracker files (just before tap and only non NAN)
-            df_mwt = pd.concat(df_store, ignore_index=True)
-            print(f'\n\t{df_mwt.shape[0]} rows')
-            # add the file list
-            nutcracker_filelist.append(pdata_save_path)
-            # save csv in savedir
-            df_mwt.to_csv(pdata_save_path, index=False)
-            print(f'\tsaved {output_name}')
-    return df_mwt, nutcracker_filelist
+            if len(df_store)==0:
+                print('\tno nutcracker.*.dat loaded')
+            elif len(df_store)==1:
+                print('\tonly one nutcracker.*.dat loaded')
+                print('\texclude this plate')
+            else:
+                print('\tconcat multiple nutcrakcer.*.dat')
+                # combine multiple nutcracker files (just before tap and only non NAN)
+                df_mwt = pd.concat(df_store, ignore_index=True)
+                print(f'\n\t{df_mwt.shape[0]} rows')
+                # save csv in savedir
+                df_mwt.to_csv(pdata_save_path, index=False)
+                print(f'\tsaved {output_name}')
+                # add the file list
+                nutcracker_filelist.append(pdata_save_path)
+    return nutcracker_filelist
 
 def nutcracker_combineall(nutcracker_filepaths):
     # load and combine nutcracker_filelist

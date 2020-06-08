@@ -1,9 +1,16 @@
 # Functions and Classes for BrainStation Projects
 # Conny Lin | June 5, 2020
 # ------------------------------------------------------------------------------------
-import os, sys, time, re, glob, pickle
+import os, sys, socket, time, re, glob, pickle
 import pandas as pd
 import numpy as np
+
+# system handling ====================================================================
+def getcomputername():
+    hostname = socket.gethostname()
+    hostname = hostname.split('.')
+    return hostname[0]
+# end -- system handling =============================================================
 
 # Database handling ==================================================================
 # MWT functions ----------------------------------------------------------------------

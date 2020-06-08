@@ -4,20 +4,6 @@
 # last file ran on June 6, 2020
 # /Volumes/COBOLT/MWT/20140515B_SJ_100s30x10s10s_goa1/N2_400mM/20140515_160131
 # ----------------------------------------------------------------------
-
-# local variable setting
-pCapstone = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data'
-pDropboxdb = '/Users/connylin/Dropbox/MWT/db'
-pCobolt = '/Volumes/COBOLT'
-mwtpath_csv_name_cobolt = 'mwtpath_cobolt.csv'
-mwtpath_csv_name_dropbox = 'mwtpath_dropbox.csv'
-pylibrary = '/Users/connylin/Code/proj/brainstation_capstone/0_lib'
-# LOCAL SETTINGS (FOR ANGULAR GYRUS)
-sourcedir_db = pCobolt
-savedir_db = pCobolt
-savedir = pCapstone
-mwtpath_csv_name = mwtpath_csv_name_cobolt
-
 # import libraries
 import os, sys, glob, pickle
 import pandas as pd
@@ -26,8 +12,25 @@ import numpy as np
 sys.path.insert(1, pylibrary)
 import BrainStationLib as bs
 
+# local variable settings
 # check which computer this code is running on
 computer_name = bs.getcomputername()
+# set local path settings based on computer host
+if computer_name == 'PFC':
+    savedir_db = '/Users/connylin/Dropbox/MWT/db'
+    mwtpath_csv_name = 'mwtpath_dropbox.csv'
+    pylibrary = '/Users/connylin/Dropbox/Code/proj/brainstation_capstone/0_lib'
+    savedir = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data'
+    sourcedir_db = '/Volumes/COBOLT'
+elif computer_name == 'Angular Gyrus':
+    savedir_db = '/Volumes/COBOLT'
+    mwtpath_csv_name = 'mwtpath_cobolt.csv'
+    pylibrary = '/Users/connylin/Code/proj/brainstation_capstone/0_lib'
+    savedir = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data'
+    sourcedir_db = '/Volumes/COBOLT'
+else:
+    assert False, 'host computer not regonized'
+
 
 # get database MWT file paths
 pathcsv = os.path.join(savedir, mwtpath_csv_name)

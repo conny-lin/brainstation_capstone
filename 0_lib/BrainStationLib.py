@@ -271,7 +271,7 @@ def nutcracker_process_perplate(mwtpaths_db, sourcedbdir, savedbdir, overwrite=F
                 print('\tconcat multiple nutcrakcer.*.dat')
                 # combine multiple nutcracker files (just before tap and only non NAN)
                 df_mwt = pd.concat(df_store, ignore_index=True)
-                print(f'\n\t{df_mwt.shape[0]} rows')
+                print(f'\t{df_mwt.shape[0]} rows')
                 # save csv in savedir
                 df_mwt.to_csv(pdata_save_path, index=False)
                 print(f'\tsaved {output_name}')

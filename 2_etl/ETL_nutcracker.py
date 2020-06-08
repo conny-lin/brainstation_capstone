@@ -5,25 +5,28 @@
 # /Volumes/COBOLT/MWT/20140515B_SJ_100s30x10s10s_goa1/N2_400mM/20140515_160131
 # ----------------------------------------------------------------------
 # import libraries
-import os, sys, glob, pickle
+import os, sys, socket, glob, pickle
 import pandas as pd
 import numpy as np
 
 # local variable settings
 # check which computer this code is running on
-computer_name = bs.getcomputername()
+hostname = socket.gethostname()
+hostname = hostname.split('.')
+hostname = hostname[0]
+
 # set local path settings based on computer host
-if computer_name == 'PFC':
+if hostname == 'PFC':
     savedir_db = '/Users/connylin/Dropbox/MWT/db'
     mwtpath_csv_name = 'mwtpath_dropbox.csv'
-    pylibrary = '/Users/connylin/Dropbox/Code/proj/brainstation_capstone/0_lib'
     savedir = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data'
+    pylibrary = '/Users/connylin/Dropbox/Code/proj/brainstation_capstone/0_lib'
     sourcedir_db = '/Volumes/COBOLT'
-elif computer_name == 'Angular Gyrus':
+elif hostname == 'Angular Gyrus':
     savedir_db = '/Volumes/COBOLT'
     mwtpath_csv_name = 'mwtpath_cobolt.csv'
-    pylibrary = '/Users/connylin/Code/proj/brainstation_capstone/0_lib'
     savedir = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data'
+    pylibrary = '/Users/connylin/Code/proj/brainstation_capstone/0_lib'
     sourcedir_db = '/Volumes/COBOLT'
 else:
     assert False, 'host computer not regonized'

@@ -58,7 +58,7 @@ mwtpaths = getMWTdb(savedir, mwtpath_csv_name)
 print('\ncombining individual nutcracker data per plate. this will take a while')
 nutcracker_filepaths = bs.nutcracker_process_perplate(mwtpaths, sourcedir_db, savedir_db)
 
-print('\ncombining all combined nutcracker data from each plate (memory intensive!)')
+print(f'\ncombining {len(nutcracker_filepaths)} plates of nutcracker data (memory intensive!)')
 data = bs.nutcracker_combineall(nutcracker_filepaths)
 
 print('\nsplit combine data into X y data set and save to savedir (large file! 20GB expected)')

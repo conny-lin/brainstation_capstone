@@ -1,6 +1,9 @@
 ## ETL nutcracker
 # Conny Lin | June 6, 2020
 # transform data from raw to ML ready data in csv
+# last file ran on June 6, 2020
+# /Volumes/COBOLT/MWT/20140515B_SJ_100s30x10s10s_goa1/N2_400mM/20140515_160131
+# ----------------------------------------------------------------------
 
 # local variable setting
 pCapstone = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data'
@@ -8,7 +11,7 @@ pDropboxdb = '/Users/connylin/Dropbox/MWT/db'
 pCobolt = '/Volumes/COBOLT'
 mwtpath_csv_name_cobolt = 'mwtpath_cobolt.csv'
 mwtpath_csv_name_dropbox = 'mwtpath_dropbox.csv'
-
+pylibrary = '/Users/connylin/Code/proj/brainstation_capstone/0_lib'
 # LOCAL SETTINGS (FOR ANGULAR GYRUS)
 sourcedir_db = pCobolt
 savedir_db = pCobolt
@@ -21,7 +24,7 @@ import os, sys, glob, pickle
 import pandas as pd
 import numpy as np
 # import local functions
-sys.path.insert(1, '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/brainstation_capstone/0_lib')
+sys.path.insert(1, pylibrary)
 import BrainStationLib as bs
 
 # get database MWT file paths

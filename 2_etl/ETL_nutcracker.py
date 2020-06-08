@@ -22,12 +22,14 @@ if hostname == 'PFC':
     savedir = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data'
     pylibrary = '/Users/connylin/Dropbox/Code/proj/brainstation_capstone/0_lib'
     sourcedir_db = '/Volumes/COBOLT'
+
 elif hostname == 'Angular Gyrus':
     savedir_db = '/Volumes/COBOLT'
     mwtpath_csv_name = 'mwtpath_cobolt.csv'
     savedir = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data'
     pylibrary = '/Users/connylin/Code/proj/brainstation_capstone/0_lib'
     sourcedir_db = '/Volumes/COBOLT'
+
 else:
     assert False, 'host computer not regonized'
 
@@ -36,18 +38,21 @@ sys.path.insert(1, pylibrary)
 import BrainStationLib as bs
 
 # get database MWT file paths
-pathcsv = os.path.join(savedir, mwtpath_csv_name)
-if os.path.isfile(pathcsv):
-    print(f'loading mwtpath.csv from \n\t{pathcsv}')
-    df = pd.read_csv(pathcsv)
-    mwtpaths = df['mwtpath'].values
-else:
-    mwtpaths = glob.glob(sourcedir_db+'/*/*/*/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9]')
-    print(f'saving mwtpath found to \n\t{pathcsv}')
-    df = pd.DataFrame({'mwtpath':mwtpaths})
-    df.to_csv(pathcsv)
-print(f'{len(mwtpaths)} mwt folders found')
+def getMWTdb(savedir, mwtpath_csv_name):
+    pathcsv = os.path.join(savedir, mwtpath_csv_name)
+    if os.path.isfile(pathcsv):
+        print(f'loading mwtpath.csv from \n\t{pathcsv}')
+        df = pd.read_csv(pathcsv)
+        mwtpaths = df['mwtpath'].values
+    else:
+        mwtpaths = glob.glob(sourcedir_db+'/*/*/*/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9]')
+        print(f'saving mwtpath found to \n\t{pathcsv}')
+        df = pd.DataFrame({'mwtpath':mwtpaths})
+        df.to_csv(pathcsv)
+    print(f'{len(mwtpaths)} mwt folders found')
+    return mwtpaths
 
+mwtpaths = getMWTdb(savedir, mwtpath_csv_name)
 
 # combine individual nutcracker per plate
 print('\ncombining individual nutcracker data per plate. this will take a while')

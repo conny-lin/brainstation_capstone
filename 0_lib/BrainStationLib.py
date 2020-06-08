@@ -220,22 +220,43 @@ def nutcracker_process_rawdata(pdata, mwtid):
         df.insert(0,'etoh', np.tile(1, df.shape[0]))
     else:
         df.insert(0,'etoh', np.tile(0, df.shape[0]))
+    # make sure etoh data is integer
+    df['etoh'].astype(int)
     return df
 
-def nutcracker_process_perplate(mwtpaths_db, sourcedbdir, savedbdir):
+def nutcracker_process_perplate(mwtpaths_db, sourcedbdir, savedbdir, overwrite=False):
+    print('\n')
     # look for nutcracker files in this plate
+    output_name = 'nutcracker_100s.csv'
     nutcracker_filelist = []
+    df_mwt = []
     for imwt, pmwt in enumerate(mwtpaths_db):
-        pnutcracker = glob.glob(pmwt+'/*.nutcracker.*.dat')
-        if len(pnutcracker) > 0:
-            print(pmwt)
+        print(pmwt)
+        # reset run status
+        run_status = True
+        # update output mwt path to savedbdir
+        pmwt_dropbox = str.replace(pmwt, sourcedbdir, savedbdir)
+        # create output path
+        pdata_save_path = os.path.join(pmwt_dropbox, output_name)
+        # do not run if overwrite=False and output already exist
+        if not overwrite:
+            if os.path.isfile(pdata_save_path):
+                print(f'\t{output_name} already exist. skip')
+                nutcracker_filelist.append(pdata_save_path)
+                run_status = False
+        # do not run if no nutcracker.*.dat
+        if run_status:
+            pnutcracker = glob.glob(pmwt+'/*.nutcracker.*.dat')
+            if len(pnutcracker) == 0:
+                run_status = False
+        if run_status:
             # make storage for df
             df_store = []
             for ifile, pdata in enumerate(pnutcracker):
                 print(f'\tprocessing {ifile}', end='\r')
                 # get time data
                 df = pd.read_csv(pdata, delimiter=' ', header=None, usecols=[0], 
-                                 names=['time'], dtype=np.float64, engine='c')
+                                names=['time'], dtype=np.float64, engine='c')
                 # see if data has time before 100s
                 if sum(df['time']<100) > 0:
                     df = nutcracker_process_rawdata(pdata, imwt)
@@ -244,14 +265,11 @@ def nutcracker_process_perplate(mwtpaths_db, sourcedbdir, savedbdir):
             # combine multiple nutcracker files (just before tap and only non NAN)
             df_mwt = pd.concat(df_store, ignore_index=True)
             print(f'\n\t{df_mwt.shape[0]} rows')
-            # add etoh column
-
-            # save csv in dropbox
-            pmwt_dropbox = str.replace(pmwt, sourcedbdir, savedbdir)
-            pdata_save_dropbox = os.path.join(pmwt_dropbox, 'nutcracker_100s.csv')
-            nutcracker_filelist.append(pdata_save_dropbox)
-            df_mwt.to_csv(pdata_save_dropbox, index=False)
-            print(f'\tsaved nutcracker_100s.csv')
+            # add the file list
+            nutcracker_filelist.append(pdata_save_path)
+            # save csv in savedir
+            df_mwt.to_csv(pdata_save_path, index=False)
+            print(f'\tsaved {output_name}')
     return df_mwt, nutcracker_filelist
 
 def nutcracker_combineall(nutcracker_filepaths):

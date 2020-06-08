@@ -8,9 +8,6 @@
 import os, sys, glob, pickle
 import pandas as pd
 import numpy as np
-# import local functions
-sys.path.insert(1, pylibrary)
-import BrainStationLib as bs
 
 # local variable settings
 # check which computer this code is running on
@@ -31,6 +28,9 @@ elif computer_name == 'Angular Gyrus':
 else:
     assert False, 'host computer not regonized'
 
+# import local functions
+sys.path.insert(1, pylibrary)
+import BrainStationLib as bs
 
 # get database MWT file paths
 pathcsv = os.path.join(savedir, mwtpath_csv_name)

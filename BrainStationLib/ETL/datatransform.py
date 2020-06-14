@@ -65,3 +65,11 @@ class Nutcracker:
                             'y_train': self.y_train, 
                             'y_test':self.y_test}
         return transform_dict
+
+    def mldata(self, test_size = 0.2, random_state = 318):
+        self.loaddata()
+        self.transform()
+        self.split_test_train(test_size, random_state)
+        self.scaledata()
+        # create dictionary
+        return self.X_train, self.X_test, self.y_train, self.y_test

@@ -14,6 +14,7 @@ class Nutcracker:
                 'vel_y', 'orient', 'crab'
                 ]
             }
+    top_features = {'bycategory': ['speed', 'aspect', 'width', 'rellength', 'dir', 'area']})
 
     def __init__(self, datapath=datapath):
         # update user input datapath

@@ -60,6 +60,21 @@ def get_chor_legend(type='table'):
         # where name starts with :
         i = chor_table['name'].str.contains(pat=':').values
         chor_table.loc[i, 'type'] = 'stats'
+        # add category
+        chor_table['category'] = ['time', 'time', 'time', 'id', 
+                              'sample_size', 'sample_size', 
+                              'area', 
+                              'width', 'width', 'width', 'width', 
+                              'length', 'length', 
+                              'angle', 'angle', 'angle', 'angle', 
+                              'speed', 'speed', 
+                              'dir', 'pathlen', 'dir', 
+                              'location', 'location', 'speed', 'speed', 
+                              'angle', 'speed', 
+                              'stim', 'stim', 'stim', 'stim', 
+                              'stats', 'stats', 'stats', 'stats', 
+                              'stats', 'stats', 'stats', 'stats', 
+                              'stats', 'stats', 'stats']
         # get description. split by
         description_split = df['ref'].str.split(r'--',expand=True)
         chor_table['description'] = description_split.iloc[:,1]

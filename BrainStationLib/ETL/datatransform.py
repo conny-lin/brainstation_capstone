@@ -63,5 +63,5 @@ class Nutcracker:
         transform_dict = {'X_train': self.X_train,
                             'X_test': self.X_test, 
                             'y_train': self.y_train, 
-                            'y_test':self.y_train}
+                            'y_test':self.y_test}
         return transform_dict

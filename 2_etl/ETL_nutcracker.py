@@ -14,6 +14,7 @@ import numpy as np
 hostname = socket.gethostname()
 hostname = hostname.split('.')
 hostname = hostname[0]
+print(hostname)
 
 # set local path settings based on computer host
 if hostname == 'PFC':
@@ -23,7 +24,7 @@ if hostname == 'PFC':
     pylibrary = '/Users/connylin/Dropbox/Code/proj/brainstation_capstone/0_lib'
     sourcedir_db = '/Volumes/COBOLT'
 
-elif hostname == 'Angular Gyrus':
+elif hostname == 'Angular-Gyrus':
     savedir_db = '/Volumes/COBOLT'
     mwtpath_csv_name = 'mwtpath_cobolt.csv'
     savedir = '/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data'

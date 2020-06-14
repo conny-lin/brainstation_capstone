@@ -1,4 +1,4 @@
-import os
+import os, socket
 import pandas as pd
 import numpy as np
 
@@ -55,7 +55,7 @@ class Nutcracker:
         return self.X_train_scaled, self.X_test_scaled
     
     def transform_full(self, test_size = 0.2, random_state = 318):
-        self.loaddata()
+        self.loaddata(self.datapath)
         self.transform()
         self.split_test_train(test_size, random_state)
         self.scaledata()

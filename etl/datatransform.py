@@ -82,7 +82,7 @@ class Nutcracker:
         # process kwargs
         random_state = kwargs.pop('random_state', 318)
         test_size = kwargs.pop('test_size', 0.2)
-        feature_reduction = kwargs.pop('feature', 'standard')
+        feature_reduction = kwargs.pop('feature_reduction', 'standard')
         self.loaddata()
         self.reduce_feature(feature_reduction)
         self.transform()

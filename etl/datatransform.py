@@ -11,8 +11,7 @@ class Nutcracker:
             'X':['time', 'persistence', 'area', 'midline', 'morphwidth',
                 'width', 'relwidth', 'length', 'rellength', 'aspect', 'relaspect',
                 'kink', 'curve', 'speed', 'angular', 'bias', 'dir', 'vel_x',
-                'vel_y', 'orient', 'crab'
-                ]
+                'vel_y', 'orient', 'crab']
             }
     top_features = {'bycategory': ['speed', 'aspect', 'width', 'rellength', 'dir', 'area']}
 
@@ -24,6 +23,14 @@ class Nutcracker:
         self.data = pd.read_csv(self.datapath)
         return self.data
 
+    def reduce_feature(self, feature_reduction='standard'):
+        if feature_reduction == 'standard':
+            self.names['X'] = ['area', 'midline', 'morphwidth', 'width', 'relwidth', 
+            'length', 'rellength', 'aspect', 'relaspect', 'kink', 'curve', 'speed', 'angular', 
+            'bias', 'dir', 'vel_x', 'vel_y', 'crab']
+        elif feature_reduction == 'None':
+            pass
+        
     def transform(self):
         # prepare y data
         y = self.data[self.names['y']].values
@@ -55,8 +62,12 @@ class Nutcracker:
         self.X_test_scaled = scaler.transform(self.X_test)
         return self.X_train_scaled, self.X_test_scaled
     
-    def transform_full(self, test_size = 0.2, random_state = 318):
+    def transform_full(self, **kwargs):
+        random_state = kwargs.pop('random_state', 318)
+        test_size = kwargs.pop('test_size', 0.2)
+        feature_reduction = kwargs.pop('feature', 'standard')
         self.loaddata()
+        self.reduce_feature(feature_reduction)
         self.transform()
         self.split_test_train(test_size, random_state)
         self.scaledata()
@@ -67,10 +78,16 @@ class Nutcracker:
                             'y_test':self.y_test}
         return transform_dict
 
-    def mldata(self, test_size = 0.2, random_state = 318):
+    def mldata(self, **kwargs):
+        # process kwargs
+        random_state = kwargs.pop('random_state', 318)
+        test_size = kwargs.pop('test_size', 0.2)
+        feature_reduction = kwargs.pop('feature_reduction', 'standard')
         self.loaddata()
+        self.reduce_feature(feature_reduction)
         self.transform()
         self.split_test_train(test_size, random_state)
         self.scaledata()
         # create dictionary
-        return self.X_train, self.X_test, self.y_train, self.y_test
+        return self.X_train_scaled, self.X_test_scaled, self.y_train, self.y_test
+    

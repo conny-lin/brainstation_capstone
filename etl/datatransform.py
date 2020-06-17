@@ -23,7 +23,8 @@ class Nutcracker:
         self.data = pd.read_csv(self.datapath)
         return self.data
 
-    def reduce_feature(self, feature_reduction='standard'):
+    def reduce_feature(self, feature_reduction):
+        print(f'{feature_reduction}')
         if feature_reduction == 'standard':
             self.names['X'] = ['area', 'midline', 'morphwidth', 'width', 'relwidth', 
             'length', 'rellength', 'aspect', 'relaspect', 'kink', 'curve', 'speed', 'angular', 
@@ -83,6 +84,7 @@ class Nutcracker:
         random_state = kwargs.pop('random_state', 318)
         test_size = kwargs.pop('test_size', 0.2)
         feature_reduction = kwargs.pop('feature_reduction', 'standard')
+        print(f'{feature_reduction}')
         self.loaddata()
         self.reduce_feature(feature_reduction)
         self.transform()
@@ -90,4 +92,5 @@ class Nutcracker:
         self.scaledata()
         # create dictionary
         return self.X_train_scaled, self.X_test_scaled, self.y_train, self.y_test
-    
+
+   

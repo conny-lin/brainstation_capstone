@@ -10,7 +10,7 @@ class test_model:
         self.model = model
         self.data = datadict
         # fit model
-        self.model.fit(data['X_train'], data['y_train'])
+        self.model.fit(self.data['X_train'], self.data['y_train'])
         # train score
         train_score = self.model.score(self.data['X_train'], self.data['y_train'])
         print(f"\tTrain Score: {train_score}")
@@ -48,7 +48,7 @@ class ml_timer:
     def param_end(self):
         end_time = time.time()
         elapsed_time = end_time - self.current_session_start
-        print(f'\telapsed time {elapsed_time/60:.3f}min')
+        print(f'\telapsed time {elapsed_time/60:.3f} min')
         self.session_times.append(elapsed_time)
     
     def session_end(self):

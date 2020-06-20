@@ -6,19 +6,24 @@ class test_model:
         # set test and train score
         self.test_acc = []
         self.train_acc = []
+    
     def score_data(self, model, datadict):
+        # get input
         self.model = model
         self.data = datadict
         # fit model
         self.model.fit(self.data['X_train'], self.data['y_train'])
         # train score
         train_score = self.model.score(self.data['X_train'], self.data['y_train'])
-        print(f"\tTrain Score: {train_score}")
+        print(f'\tTrain Score: \t\t{train_score}')
         self.train_acc.append(train_score)
         # test score
         test_score = self.model.score(self.data['X_test'], self.data['y_test'])
-        print(f"\tTest Score: {test_score}")
+        print(f'\tTest Score: \t\t{test_score}')
         self.test_acc.append(test_score)
+        # print comparison
+        print(f'\tOverfit (train - test): \t\t {train_score - test_score}')
+
 
 def test_train_score_capture(model, data, train_acc, test_acc):
     # fit model
@@ -32,6 +37,7 @@ def test_train_score_capture(model, data, train_acc, test_acc):
     print(f"\tTest Score: {test_score}")
     test_acc.append(test_score)
     return train_acc, test_acc
+
 
 class ml_timer:
     def __init__(self):

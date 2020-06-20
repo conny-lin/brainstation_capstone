@@ -22,7 +22,7 @@ class test_model:
         print(f'\tTest Score: \t\t{test_score}')
         self.test_acc.append(test_score)
         # print comparison
-        print(f'\tOverfit (train - test): \t\t {train_score - test_score}')
+        print(f'\tOverfit (train - test): \t{train_score - test_score}')
 
 
 def test_train_score_capture(model, data, train_acc, test_acc):

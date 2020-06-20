@@ -13,7 +13,7 @@ def nutcracker(localpaths, dataname, datatype):
     print(f'loading {len(datatype)} files')
     datadict = dict()
     for i, dname in enumerate(datatype):
-        print(f'loading file: {i}', end='\r')
+        print(f'loading file: {i}', end='/r')
         filename = dataname + '_' + dname + '.csv'
         filepath = os.path.join(dir_datafolder, filename)
         data = pd.read_csv(filepath, header=None, index_col=False)

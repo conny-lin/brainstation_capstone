@@ -17,9 +17,10 @@ def hyperparameterplot(hyperparameter_list, train_score_list, test_score_list, \
     plt.xlabel(hyperparameter_name)
     if isinstance(hyperparameter_list[0], str):
         plt.xticks(labels=hyperparameter_label)
-    plt.ylabel('score')
+    plt.ylabel('accuracy score')
     plt.legend()
     plt.show()
+
 
 def gridcvplot(hyperparameter_list, means, stds, hyperparameter_name='', titlename=''):
     plt.figure()

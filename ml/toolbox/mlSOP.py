@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import time
+import time, os
 from sklearn.model_selection import GridSearchCV
 import matplotlib.pyplot as plt
 
@@ -106,10 +106,28 @@ class GridSearchCVSOP:
 
 
 
+def load_nutcracker_csv(dir_datafolder):
+    datatype = ['X_train','X_test','y_train','y_test']
+    print(f'loading {len(datatype)} files')
+    datadict = dict()
+    for i, dname in enumerate(datatype):
+        print(f'loading file: {i}', end='\r')
+        filename = 'nutcracker' + '_' + dname + '.csv'
+        filepath = os.path.join(dir_datafolder, filename)
+        data = pd.read_csv(filepath, header=None, index_col=False)
+        datadict[dname] = data.to_numpy()
+    print('loading completed')
+    return datadict
+
+
+
 class ModelEvaluation:
-    def __init__(self, model, data):
+    def __init__(self, model, data_dir):
         self.model = model
-        self.data = data
+        self.data_dir = data_dir
+    
+    def load_data(self):
+        self.data = load_nutcracker_csv(self.data_dir)
 
     def cross_val_score(self, cv=5):
         from sklearn.model_selection import cross_val_score
@@ -262,8 +280,36 @@ class ModelEvaluation:
         self.roc_auc_test = roc_auc_test
         self.roc_auc_train = roc_auc_train
     
-    def standard(self):
-        print('runing cross validation scores (this takes a while):')
+    def save(self, savedir):
+        # remove data from object to save space
+        delattr(self, 'data')
+        # get model name
+        model_type = type(self.model)
+        model_type_str  = str(model_type)
+        model_name_components = model_type_str.split('.')
+        model_name = model_name_components[-1].replace("'>","")
+        # save
+        import pickle, os
+        savepath = os.path.join(savedir, model_name+'_eval.pickle')
+        pickle.dump(self, open(savepath, 'wb'))
+
+    def excel_input_array(self):
+        report = [np.mean(self.cross_val_score_),
+                    np.std(self.cross_val_score_),
+                    self.score_train,
+                    self.score_test,
+                    self.precision_score,
+                    self.recall_score,
+                    self.f1_score,
+                    self.roc_auc_train,
+                    self.roc_auc_test]
+        print(report)
+        print(self.model)
+    
+    def standard(self, savedir):
+        print('\nloading data from directory')
+        self.load_data()
+        print('\nruning cross validation scores (this takes a while):')
         self.cross_val_score(5)
         print('\nfit model...')
         self.fitmodel()
@@ -285,19 +331,12 @@ class ModelEvaluation:
         self.proba_thresholds()
         print('\nROC AUC analysis')
         self.roc_auc()
+        print('\nSaving model')
+        self.save(savedir)
+        print('\nexcel record:')
+        self.excel_input_array()
     
-    def save(self, savedir):
-        # remove data from object to save space
-        delattr(self, 'data')
-        # get model name
-        model_type = type(model_eval.model)
-        model_type_str  = str(model_type)
-        model_name_components = model_type_str.split('.')
-        model_name = model_name_components[-1].replace("'>","")
-        # save
-        import pickle, os
-        savepath = os.path.join(savedir, model_name+'_eval.pickle')
-        pickle.dump(self, open(savepath, 'wb'))
+
 
 
 

@@ -78,10 +78,11 @@ class GridSearchCVSOP:
         cv = kwargs.pop('cv', 3)
         scoring = kwargs.pop('scoring', 'accuracy')
         error_score = kwargs.pop('error_score', 0)
+        verbose = kwargs.pop('verbose', 3)
         # instantiate grid search
         self.grid_search = GridSearchCV(estimator=self.model, 
                                 param_grid=self.grid,
-                                n_jobs=n_jobs, 
+                                n_jobs=n_jobs, verbose=verbose,
                                 cv=cv, scoring=scoring, 
                                 error_score=error_score)
         self.grid_result = self.grid_search.fit(X, y)

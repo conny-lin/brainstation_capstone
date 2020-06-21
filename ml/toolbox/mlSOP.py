@@ -111,12 +111,12 @@ def load_nutcracker_csv(dir_datafolder):
     print(f'loading {len(datatype)} files')
     datadict = dict()
     for i, dname in enumerate(datatype):
-        print(f'loading file: {i}', end='\r')
+        print(f'loading file: {i}', end='/r')
         filename = 'nutcracker' + '_' + dname + '.csv'
         filepath = os.path.join(dir_datafolder, filename)
         data = pd.read_csv(filepath, header=None, index_col=False)
         datadict[dname] = data.to_numpy()
-    print('loading completed')
+    print('\nloading completed')
     return datadict
 
 
@@ -127,9 +127,12 @@ class ModelEvaluation:
         self.data_dir = data_dir
     
     def load_data(self):
-        self.data = load_nutcracker_csv(self.data_dir)
+        if not hasattr(self, 'data'):
+            self.data = load_nutcracker_csv(self.data_dir)
 
     def cross_val_score(self, cv=5):
+        if not hasattr(self, 'data'):
+            self.load_data()
         from sklearn.model_selection import cross_val_score
         scores = cross_val_score(self.model, 
                     self.data['X_train'], 
@@ -142,14 +145,20 @@ class ModelEvaluation:
         return self.cross_val_score_
     
     def fitmodel(self):
+        if not hasattr(self, 'data'):
+            self.load_data()
         self.model.fit(self.data['X_train'], self.data['y_train'])
         return self.model
     
     def predict(self):
+        if not hasattr(self, 'data'):
+            self.load_data()
         self.y_pred_test = self.model.predict(self.data['X_test'])
         self.y_pred_train = self.model.predict(self.data['X_train'])
 
     def accuracy_score(self):
+        if not hasattr(self, 'data'):
+            self.load_data()
         self.score_train = self.model.score(self.data["X_train"], self.data['y_train'])
         print(f'accuracy score on train: {self.score_train}')
         self.score_test = self.model.score(self.data['X_test'], self.data['y_test'])
@@ -157,6 +166,8 @@ class ModelEvaluation:
         return self.score_train, self.score_test
 
     def confusion_matrix(self):
+        if not hasattr(self, 'y_pred_test'):
+            self.predict()
         # fitmodel and predict must proceed this.
         # define dataframe labels
         columns = ['Predicted normal', 'Predicted alcohol']
@@ -180,6 +191,8 @@ class ModelEvaluation:
         return self.conf_matrix_test, self.conf_matrix_train
     
     def display_confusion_matrix(self):
+        if not hasattr(self, 'conf_matrix_test'):
+            self.confusion_matrix()
         # confusion_matrix must proceed this
         display_labels = ['normal', 'alcohol']
         from sklearn.metrics import ConfusionMatrixDisplay
@@ -193,11 +206,16 @@ class ModelEvaluation:
         plt.show()
 
     def classification_report(self):
+        if not hasattr(self, 'y_pred_test'):
+            self.predict()
         from sklearn.metrics import classification_report
-        self.eval_score_report = classification_report(self.data['y_test'], self.y_pred_test)
+        self.eval_score_report = classification_report(self.data['y_test'], 
+                                                        self.y_pred_test)
         print(self.eval_score_report)
     
     def print_evaluation_scores(self):
+        if not hasattr(self, 'y_pred_test'):
+            self.predict()        
         from sklearn.metrics import precision_score
         from sklearn.metrics import recall_score
         from sklearn.metrics import f1_score
@@ -208,7 +226,9 @@ class ModelEvaluation:
         print(f'recall_score = {self.recall_score}')
         print(f'f1_score = {self.f1_score}')
     
-    def test_data_class_proba(self):        
+    def test_data_class_proba(self):
+        if not hasattr(self, 'data'):
+            self.load_data()        
         false_proba = np.count_nonzero(self.data['y_test']) / self.data['y_test'].shape[0]
         true_proba = 1.0 - false_proba
         print(f'test set normal case probability: {false_proba}')
@@ -218,10 +238,15 @@ class ModelEvaluation:
         self.real_proba['true_proba'] = true_proba
     
     def predict_proba(self):
+        if not hasattr(self, 'data'):
+            self.load_data()
         self.y_proba_test = self.model.predict_proba(self.data['X_test'])[:,1]
         self.y_proba_train = self.model.predict_proba(self.data['X_train'])[:,1]
+        return self.y_proba_test, self.y_proba_train
 
     def proba_thresholds(self):
+        if not hasattr(self, 'data'):
+            self.load_data()
         from sklearn.metrics import accuracy_score
         from sklearn.metrics import precision_score
         from sklearn.metrics import recall_score
@@ -241,12 +266,6 @@ class ModelEvaluation:
             precisions.append(precision)
             recalls.append(recall)
             neg_recalls.append(neg_recall)
-        # get output
-        self.proba_threshold = dict()
-        self.proba_threshold['thresholds'] = thresholds
-        self.proba_threshold['precisions'] = precisions
-        self.proba_threshold['recalls'] = recalls
-        self.proba_threshold['neg_recalls'] = neg_recalls
         # Visualize the result
         plt.figure()
         plt.plot(thresholds, precisions, label='precision', marker='o')
@@ -256,8 +275,11 @@ class ModelEvaluation:
         plt.ylabel('score')
         plt.legend()
         plt.show()
+        return precisions, recalls, neg_recalls
         
     def roc_auc(self):
+        if hasattr(self, 'y_proba_train'):
+            self.predict_proba()
         from sklearn.metrics import roc_curve, roc_auc_score
         # get roc auc train
         fprs_train, tprs_train, thresholds_train = roc_curve(self.data['y_train'], self.y_proba_train)
@@ -282,7 +304,16 @@ class ModelEvaluation:
     
     def save(self, savedir):
         # remove data from object to save space
-        delattr(self, 'data')
+        if hasattr(self, 'data'):
+            delattr(self, 'data')
+        if hasattr(self, 'y_pred_test'):
+            delattr(self, 'y_pred_test')
+        if hasattr(self, 'y_pred_train'):
+            delattr(self, 'y_pred_train')
+        if hasattr(self, 'y_proba_test'):
+            delattr(self, 'y_proba_test') 
+        if hasattr(self, 'y_proba_train'):
+            delattr(self, 'y_proba_train') 
         # get model name
         model_type = type(self.model)
         model_type_str  = str(model_type)
@@ -294,6 +325,7 @@ class ModelEvaluation:
         pickle.dump(self, open(savepath, 'wb'))
 
     def excel_input_array(self):
+        # TODO: write input validation code
         report = [np.mean(self.cross_val_score_),
                     np.std(self.cross_val_score_),
                     self.score_train,
@@ -306,7 +338,7 @@ class ModelEvaluation:
         print(report)
         print(self.model)
     
-    def standard(self, savedir):
+    def standard(self, save_dir):
         print('\nloading data from directory')
         self.load_data()
         print('\nruning cross validation scores (this takes a while):')
@@ -325,14 +357,14 @@ class ModelEvaluation:
         self.print_evaluation_scores()
         print('\nreal data class proba:')
         self.test_data_class_proba()
-        print('\n prediction proba')
+        print('\n prediction proba:')
         self.predict_proba()
-        print('\n proba threshold analysis')
+        print('\nproba threshold analysis:')
         self.proba_thresholds()
-        print('\nROC AUC analysis')
+        print('\nROC AUC analysis:')
         self.roc_auc()
-        print('\nSaving model')
-        self.save(savedir)
+        print('\nSaving model...')
+        self.save(save_dir)
         print('\nexcel record:')
         self.excel_input_array()
     

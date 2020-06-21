@@ -67,7 +67,7 @@ class ml_timer:
         return self.session_times
     
 
-class GridSearchCVHelper:
+class GridSearchCVSOP:
     def __init__(self, model, grid):
         self.grid = grid
         self.model = model

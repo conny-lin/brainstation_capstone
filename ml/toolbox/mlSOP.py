@@ -68,8 +68,9 @@ class ml_timer:
         self.end = time.time()
     
     def get_time(self):
-        print(f'total time: {(self.end - self.start)/60:.3f} min')
-        return self.session_times
+        self.runtime = self.end - self.start
+        print(f'total time: {(self.runtime)/60:.3f} min')
+        return self.runtime
     
 
 
@@ -111,7 +112,7 @@ def load_nutcracker_csv(dir_datafolder):
     print(f'loading {len(datatype)} files')
     datadict = dict()
     for i, dname in enumerate(datatype):
-        print(f'loading file: {i}', end='/r')
+        print(f'loading file: {i}', end='\r')
         filename = 'nutcracker' + '_' + dname + '.csv'
         filepath = os.path.join(dir_datafolder, filename)
         data = pd.read_csv(filepath, header=None, index_col=False)
@@ -131,6 +132,7 @@ class ModelEvaluation:
             self.data = load_nutcracker_csv(self.data_dir)
 
     def cross_val_score(self, cv=5):
+        timer = ml_timer()
         if not hasattr(self, 'data'):
             self.load_data()
         from sklearn.model_selection import cross_val_score
@@ -138,6 +140,8 @@ class ModelEvaluation:
                     self.data['X_train'], 
                     self.data['y_train'], 
                     cv=cv)
+        timer.session_end()
+        self.runtime_crossval = timer.get_time()
         print(f'cross validation scores: {scores}')
         print(f'validation score (mean):{np.mean(scores)}')
         print(f'validation score (std):{np.std(scores)}')
@@ -153,7 +157,10 @@ class ModelEvaluation:
     def predict(self):
         if not hasattr(self, 'data'):
             self.load_data()
+        timer = ml_timer()
         self.y_pred_test = self.model.predict(self.data['X_test'])
+        timer.session_end()
+        self.runtime_predict = timer.get_time()
         self.y_pred_train = self.model.predict(self.data['X_train'])
 
     def accuracy_score(self):
@@ -334,7 +341,9 @@ class ModelEvaluation:
                     self.recall_score,
                     self.f1_score,
                     self.roc_auc_train,
-                    self.roc_auc_test]
+                    self.roc_auc_test,
+                    self.runtime_crossval,
+                    self.runtime_predict]
         print(report)
         print(self.model)
     

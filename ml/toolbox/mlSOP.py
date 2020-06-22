@@ -347,7 +347,7 @@ class ModelEvaluation:
         print(report)
         print(self.model)
     
-     def standard(self, save_dir):
+    def standard(self, save_dir):
         if not hasattr(self.model, 'predict_proba'):
             print('confirm: model has no predict_proba')
         print('\nloading data from directory')

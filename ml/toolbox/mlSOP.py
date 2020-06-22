@@ -311,7 +311,9 @@ class ModelEvaluation:
         self.roc_auc_train = roc_auc_train
     
     def update_data_dir(self, data_dir):
-        self.data_dir = data_dir
+        if self.data_dir != data_dir:
+            self.data_dir_original = self.data_dir
+            self.data_dir = data_dir
     
     def save(self, savedir):
         # remove data from object to save space

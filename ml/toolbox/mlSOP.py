@@ -162,6 +162,7 @@ class ModelEvaluation:
         timer.session_end()
         self.runtime_predict = timer.get_time()
         self.y_pred_train = self.model.predict(self.data['X_train'])
+        return self.y_predict_test
 
     def accuracy_score(self):
         if not hasattr(self, 'data'):

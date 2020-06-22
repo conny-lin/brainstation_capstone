@@ -60,16 +60,16 @@ class ml_timer:
 
     def param_end(self):
         end_time = time.time()
-        elapsed_time = end_time - self.current_session_start
-        print(f'\telapsed time {elapsed_time/60:.3f} min')
+        elapsed_time = (end_time - self.current_session_start)/60
+        print(f'\telapsed time {elapsed_time:.3f} min')
         self.session_times.append(elapsed_time)
     
     def session_end(self):
         self.end = time.time()
     
     def get_time(self):
-        self.runtime = self.end - self.start
-        print(f'total time: {(self.runtime)/60:.3f} min')
+        self.runtime = (self.end - self.start)/60
+        print(f'total time: {self.runtime:.3f} min')
         return self.runtime
     
 
@@ -332,18 +332,18 @@ class ModelEvaluation:
         pickle.dump(self, open(savepath, 'wb'))
 
     def excel_input_array(self):
-        # TODO: write input validation code
         report = [np.mean(self.cross_val_score_),
                     np.std(self.cross_val_score_),
                     self.score_train,
                     self.score_test,
                     self.precision_score,
                     self.recall_score,
-                    self.f1_score,
-                    self.roc_auc_train,
-                    self.roc_auc_test,
-                    self.runtime_crossval,
-                    self.runtime_predict]
+                    self.f1_score]
+        if hasattr(self, 'roc_auc_train'):
+            report.append(self.roc_auc_train)
+            report.append(self.roc_auc_test)
+        report.append(self.runtime_crossval)
+        report.append(self.runtime_predict)
         print(report)
         print(self.model)
     

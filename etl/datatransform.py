@@ -66,7 +66,7 @@ class Nutcracker:
     def transform_full(self, **kwargs):
         random_state = kwargs.pop('random_state', 318)
         test_size = kwargs.pop('test_size', 0.2)
-        feature_reduction = kwargs.pop('feature', 'standard')
+        feature_reduction = kwargs.pop('feature', 'None')
         self.loaddata()
         self.reduce_feature(feature_reduction)
         self.transform()
@@ -83,7 +83,7 @@ class Nutcracker:
         # process kwargs
         random_state = kwargs.pop('random_state', 318)
         test_size = kwargs.pop('test_size', 0.2)
-        feature_reduction = kwargs.pop('feature_reduction', 'standard')
+        feature_reduction = kwargs.pop('feature_reduction', 'None')
         print(f'{feature_reduction}')
         self.loaddata()
         self.reduce_feature(feature_reduction)

@@ -162,7 +162,7 @@ class ModelEvaluation:
         timer.session_end()
         self.runtime_predict = timer.get_time()
         self.y_pred_train = self.model.predict(self.data['X_train'])
-        return self.y_predict_test
+        return self.y_pred_test
 
     def accuracy_score(self):
         if not hasattr(self, 'data'):
@@ -309,6 +309,9 @@ class ModelEvaluation:
         print(f"Train AUC score: {roc_auc_train}")
         self.roc_auc_test = roc_auc_test
         self.roc_auc_train = roc_auc_train
+    
+    def update_data_dir(self, data_dir):
+        self.data_dir = data_dir
     
     def save(self, savedir):
         # remove data from object to save space

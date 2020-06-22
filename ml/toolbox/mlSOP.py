@@ -348,6 +348,8 @@ class ModelEvaluation:
         print(self.model)
     
     def standard(self, save_dir):
+        if not hasattr(self.model, 'predict_proba'):
+            print('confirm: model has not predict_proba')
         print('\nloading data from directory')
         self.load_data()
         print('\nruning cross validation scores (this takes a while):')
@@ -364,15 +366,18 @@ class ModelEvaluation:
         print('\nclassification report:')
         self.classification_report()
         self.print_evaluation_scores()
-        print('\nreal data class proba:')
-        self.test_data_class_proba()
-        print('\n prediction proba:')
-        self.predict_proba()
-        print('\nproba threshold analysis:')
-        self.proba_thresholds()
-        print('\nROC AUC analysis:')
-        self.roc_auc()
-        print('\nSaving model...')
+        if hasattr(self.model, 'predict_proba'):
+            print('\nreal data class proba:')
+            self.test_data_class_proba()
+            print('\n prediction proba:')
+            self.predict_proba()
+            print('\nproba threshold analysis:')
+            self.proba_thresholds()
+            print('\nROC AUC analysis:')
+            self.roc_auc()
+            print('\nSaving model...')
+        else:
+            print('\nthis model does not have predict_proba attr')
         self.save(save_dir)
         print('\nexcel record:')
         self.excel_input_array()

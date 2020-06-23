@@ -24,11 +24,15 @@ class Nutcracker:
         return self.data
 
     def reduce_feature(self, feature_reduction):
-        print(f'{feature_reduction}')
+        print(f'feature reduction method: {feature_reduction}')
         if feature_reduction == 'standard':
             self.names['X'] = ['area', 'midline', 'morphwidth', 'width', 'relwidth', 
-            'length', 'rellength', 'aspect', 'relaspect', 'kink', 'curve', 'speed', 'angular', 
-            'bias', 'dir', 'vel_x', 'vel_y', 'crab']
+                'length', 'rellength', 'aspect', 'relaspect', 'kink', 'curve', 'speed', 'angular', 
+                'bias', 'dir', 'vel_x', 'vel_y', 'crab']
+        elif feature_reduction == 'keep_identifier':
+            self.names['X'] = ['id','mwtid','frame','area', 'midline', 'morphwidth', 'width', 'relwidth', 
+                'length', 'rellength', 'aspect', 'relaspect', 'kink', 'curve', 'speed', 'angular', 
+                'bias', 'dir', 'vel_x', 'vel_y', 'crab']
         elif feature_reduction == 'None':
             pass
         

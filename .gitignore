@@ -63,3 +63,21 @@ testAG.ipynb
 test.ipynb
 
 Untitled.ipynb
+
+*.pages
+
+*.pickle
+
+*.csv
+
+*.png
+
+*.mov
+
+*.xlsx
+
+*.pdf
+
+*.docx
+
+documents/presentation/

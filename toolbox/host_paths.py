@@ -19,4 +19,10 @@ def get(hostname):
     else:
         assert False, 'host computer not regonized'
     return localpath
+
+def getcomputername():
+    hostname = socket.gethostname()
+    hostname = hostname.split('.')
+    return hostname[0]
+
     

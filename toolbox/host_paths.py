@@ -17,7 +17,12 @@ def get(hostname):
             'ml_eval_dir':'/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data/ml_eval_results',
             'datapath':'/Users/connylin/Dropbox/CA/ED _20200119 Brain Station Data Science Diploma/Capstone/data/nutcracker_sample_1Meach.csv'}
     else:
-        assert False, 'host computer not regonized'
+        print('assume directory are relative to this code')
+        localpath = {
+            'Capstone':'',
+            'output_dir':'/data',
+            'ml_eval_dir':'/data/ml_eval_results',
+            'datapath':'/data/nutcracker_sample_1Meach.csv'}
     return localpath
 
 def getcomputername():

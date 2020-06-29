@@ -9,13 +9,13 @@ import os, sys, socket, glob, pickle
 import pandas as pd
 import numpy as np
 
-# local variable settings
-# check which computer this code is running on
-hostname = socket.gethostname()
-hostname = hostname.split('.')
-hostname = hostname[0]
-print(hostname)
-
+# add python modules paths based on computer hostname
+import socket
+hostname = socket.gethostname().split('.')[0]
+if hostname == 'Angular-Gyrus':
+    path_py_library = '/Users/connylin/Code/proj/brainstation_capstone'
+    if path_py_library not in sys.path:
+        sys.path.insert(1, path_py_library)
 # set local path settings based on computer host
 if hostname == 'PFC':
     savedir_db = '/Users/connylin/Dropbox/MWT/db'
@@ -34,25 +34,8 @@ elif hostname == 'Angular-Gyrus':
 else:
     assert False, 'host computer not regonized'
 
-# import local functions
-sys.path.insert(1, pylibrary)
-import BrainStationLib as bs
-
-# get database MWT file paths
-def getMWTdb(savedir, mwtpath_csv_name):
-    pathcsv = os.path.join(savedir, mwtpath_csv_name)
-    if os.path.isfile(pathcsv):
-        print(f'loading mwtpath.csv from \n\t{pathcsv}')
-        df = pd.read_csv(pathcsv)
-        mwtpaths = df['mwtpath'].values
-    else:
-        mwtpaths = glob.glob(sourcedir_db+'/*/*/*/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9]')
-        print(f'saving mwtpath found to \n\t{pathcsv}')
-        df = pd.DataFrame({'mwtpath':mwtpaths})
-        df.to_csv(pathcsv)
-    print(f'{len(mwtpaths)} mwt folders found')
-    return mwtpaths
-
+# get MWT database
+from toolbox.database import getMWTdb
 mwtpaths = getMWTdb(savedir, mwtpath_csv_name)
 
 # combine individual nutcracker per plate

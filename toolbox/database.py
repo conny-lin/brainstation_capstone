@@ -38,6 +38,20 @@ def searchMWTplates(path_input, search_param='structured'):
     print(f'\t\t{pMWT_found.shape[0]} MWT folders found')
     return pMWT_found
 
+# get database MWT file paths
+def getMWTdb(savedir, mwtpath_csv_name):
+    pathcsv = os.path.join(savedir, mwtpath_csv_name)
+    if os.path.isfile(pathcsv):
+        print(f'loading mwtpath.csv from \n\t{pathcsv}')
+        df = pd.read_csv(pathcsv)
+        mwtpaths = df['mwtpath'].values
+    else:
+        mwtpaths = glob.glob(sourcedir_db+'/*/*/*/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9][0-9][0-9]')
+        print(f'saving mwtpath found to \n\t{pathcsv}')
+        df = pd.DataFrame({'mwtpath':mwtpaths})
+        df.to_csv(pathcsv)
+    print(f'{len(mwtpaths)} mwt folders found')
+    return mwtpaths
 
 def loadMWTDB(path_dbcsv):
     if os.path.isfile(path_dbcsv):
